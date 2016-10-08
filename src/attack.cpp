@@ -44,19 +44,23 @@ while (true) {
 	stringstream shell_command;
         ofstream commands_file;
         commands_file.open("commands");
-        
+        if (atoi(argv[2]) == 0) {
         commands_file << "read_model -i " << model_file_name << endl << "go_bmc" << endl << "check_ltlspec_bmc_inc -k " << bmc_length << "" << endl << "show_traces -o output" << endl << "quit" << endl;
+        }
+        else {
+            commands_file << "read_model -i " << model_file_name << endl << "go" << endl << "check_ctlspec" << endl << "show_traces -o output" << endl << "quit" << endl;
+        }
         commands_file.close();
          system("rm -rf output");
          cout << "Checking for counterexamples..." << endl;
 
 shell_command << "NuSMV-2.6.0-Linux/bin/NuSMV -source commands > /dev/null 2>&1";
-               system(shell_command.str().c_str());
+               if (system(shell_command.str().c_str())) { cout << "Fatal error: exiting..." << endl; exit(EXIT_FAILURE); };
 	
         struct stat buf;
 	        if (stat("output", &buf) != 0) { // file doesn't exist
             // system("rm -rf output"); 
-
+            if (atoi(argv[2]) == 1) { cout << "No counterexample found: circuit decamouflaged." << endl; break; }
             cout << "No counterexample found: checking reachability..." << endl; // PressEnterToContinue();
             commands_file.open("commands");
             commands_file << "read_model -i " << model_file_name << endl << "go_bmc" << endl << "check_ltlspec_bmc_onepb -p \"FALSE\" -l X -k " << bmc_length << endl << "show_traces -o output" << endl << "quit" << endl;
@@ -64,7 +68,7 @@ shell_command << "NuSMV-2.6.0-Linux/bin/NuSMV -source commands > /dev/null 2>&1"
 
             // shell_command << "NuSMV-2.6.0-Linux/bin/NuSMV -source commands";
             // system("rm -rf output");
-            system(shell_command.str().c_str());
+            if (system(shell_command.str().c_str())) { cout << "Fatal error: exiting..." << endl; exit(EXIT_FAILURE); };
 	
 	    // ifstream example_file;
             // example_file.open("output");        

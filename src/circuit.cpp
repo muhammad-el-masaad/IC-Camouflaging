@@ -203,6 +203,9 @@ if (n.type == "STATE") {
     model << "LTLSPEC G";
     for (int i = 0; i < output_list.size(); i++) model << (i == 0? " (": " & ") << "(" << output_list[i] << "_1 = " << output_list[i] << "_2)";
     model << ");\n";
+    model << "CTLSPEC AG";
+    for (int i = 0; i < output_list.size(); i++) model << (i == 0? " (": " & ") << "(" << output_list[i] << "_1 = " << output_list[i] << "_2)";
+    model << ");\n";
 
     return model.str();
 }
