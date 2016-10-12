@@ -27,6 +27,7 @@ class Circuit {
 		Circuit();
 		string generate_smv_model();
 		int read_bench(char* bench_file_name);
+                void remove_input_buffers();
                 int camouflage_random(float percentage, bool xor_or_xnor);
                 int decamouflage();
 		string generate_smv_sequential_constraint(int number, map<string,bool> initial_state, vector<map<string,bool> > input_sequence, vector<map<string,bool> > output_sequence);

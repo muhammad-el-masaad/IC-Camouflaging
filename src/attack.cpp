@@ -45,7 +45,7 @@ while (true) {
         ofstream commands_file;
         commands_file.open("commands");
         if (atoi(argv[2]) == 0) {
-        commands_file << "read_model -i " << model_file_name << endl << "go_bmc" << endl << "check_ltlspec_bmc_inc -k " << bmc_length << "" << endl << "show_traces -o output" << endl << "quit" << endl;
+        commands_file << "read_model -i " << model_file_name << endl << "go_bmc" << endl << "check_ltlspec_bmc_onepb -k " << bmc_length << "" << endl << "show_traces -o output" << endl << "quit" << endl;
         }
         else {
             commands_file << "read_model -i " << model_file_name << endl << "go" << endl << "check_ctlspec" << endl << "show_traces -o output" << endl << "quit" << endl;

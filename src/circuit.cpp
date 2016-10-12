@@ -78,6 +78,36 @@ int Circuit::read_bench(char* circuit_file_name) {
     return 0;
 }
 
+void Circuit::remove_input_buffers() {
+    for (map<string,node>::iterator it = node_table.begin(); it != node_table.end(); ++it) {
+        if (it->second.type == "STATE") {
+            string input = it->second.fanins[0];
+            vector<string> cone;
+            cone.push_back(input);
+            //for (int i = 0; i < node_table[input].fanins.size(); i++) {
+            //   if (node_table[node_table[input].fanins[i]].type = "STATE") continue;
+            //   cone.push_back(node_table[input].fanins[i]);
+            //}
+            bool done, not_buffer = false;
+            do {
+                done = true;
+                for (int i = 0; i < cone.size(); i++) {
+                    for (int j = 0; j < node_table[cone[i]].fanins.size(); j++) {
+                        if (node_table[node_table[cone[i]].fanins[j]].type == "STATE") { not_buffer = true; break; }
+                        bool found  = false;
+                        for (int k = 0; k < cone.size(); k++)
+                            if (cone[k] == node_table[cone[i]].fanins[j]) { found = true; break; }
+                        if (!found) { if (done) done = false; cone.push_back(node_table[cone[i]].fanins[j]); }
+                    }
+                    if (not_buffer) break;
+                }
+                if (not_buffer) break;
+            } while (!done);
+            if (!not_buffer) cout << "Buffer found!" << endl;
+        }
+    }
+}
+
 // percentage is percentage of gates in the netlist to camouflage
 // xnor_or_xor is used to specify whether to camouflage XNOR or XOR gates
 
